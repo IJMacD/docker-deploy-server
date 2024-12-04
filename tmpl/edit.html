@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Creating {{.Name}}</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+<h1>Creating {{.Name}}</h1>
+
+<p>
+  <a href="/">Back</a>
+</p>
+
+<form action="/save/{{.Name}}" method="POST">
+<div><textarea name="body" rows="20" cols="80">{{printf "%s" .Body}}</textarea></div>
+<div><input type="submit" value="Save"></div>
+</form>
+
+</body>
+</html>

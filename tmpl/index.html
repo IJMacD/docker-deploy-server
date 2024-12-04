@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docker Deployer</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+<h1>Docker Deployer</h1>
+<h2>Machines</h2>
+
+{{$rs := .Revisions}}
+<table>
+  <thead>
+    <tr>
+      <th>Serial Number</th>
+      <th>Revision</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{range $m := .Machines}}
+    <tr>
+      <td>
+        <form id="form-{{$m.SerialNumber}}" action="/machines/{{$m.SerialNumber}}" method="post">
+          {{$m.SerialNumber}}
+        </form>
+      </td>
+      <td>
+        <select form="form-{{$m.SerialNumber}}" name="revision" >
+          {{range $r := $rs}}
+          <option value="{{$r}}" {{if eq $r $m.Revision}}selected{{end}}>{{$r}}</option>
+          {{end}}
+        </select>
+      </td>
+      <td><button form="form-{{$m.SerialNumber}}">Save</button></td>
+    </tr>
+    {{end}}
+  </tbody>
+</table>
+
+<h2>Revisions</h2>
+
+<ul>
+  {{range $r := .Revisions}}
+  <li><a href="/revisions/{{$r}}">{{$r}}</a></li>
+  {{end}}
+</ul>
+</body>
+</html>

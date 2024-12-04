@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{.Revision.Name}}</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+<h1>Revision: {{.Revision.Name}}</h1>
+
+<p>
+  <a href="/">Back</a>
+  <a href="/edit/{{.NextName}}?from={{.Revision.Name}}">New Revision</a>
+</p>
+
+<pre>{{printf "%s" .Revision.Body}}</pre>
+
+<h2>Machines</h2>
+<ul>
+  {{range $m := .Machines}}
+  <li>{{$m.SerialNumber}}</li>
+  {{end}}
+</ul>
+
+</body>
+</html>
