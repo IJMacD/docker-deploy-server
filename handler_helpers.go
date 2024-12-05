@@ -1,31 +1,44 @@
 package main
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"path"
 )
 
-func serveRevision(w http.ResponseWriter, f string, r string) {
+func serveRevision(w http.ResponseWriter, r	*http.Request, f string, rn string) {
 	if f == "" {
 		f = defaultFleet
 	}
 
-	if r == "" {
-		r = defaultRevision
+	if rn == "" {
+		rn = defaultRevision
 	}
 
-	filename := path.Join("fleets", f, r+".yml")
-	file, err := os.Open(filename)
+	filename := path.Join("fleets", f, rn+".yml")
+	file, err := os.ReadFile(filename)
 	if err != nil {
 		http.Error(w, "", http.StatusNotFound)
 	}
 
 	w.Header().Set("Content-Type", "application/yaml")
 
-	io.Copy(w, file)
+	hash := md5.Sum([]byte(file))
+	etag := `"`+hex.EncodeToString(hash[:])+`"`
+
+	rEtag := r.Header.Get("If-None-Match")
+
+	if rEtag == etag {
+		w.WriteHeader(http.StatusNotModified)
+		return
+	}
+
+	w.Header().Set("ETag", etag)
+
+	w.Write(file)
 }
 
 func makeFleetHandler(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {

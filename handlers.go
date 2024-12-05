@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io"
 	"net/http"
 	"os"
 	"path"
@@ -154,7 +153,7 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 	// Record latest revision served to machine
 	n.RevisionName = f.CurrentRevisionName()
 
-	serveRevision(w, n.FleetName, n.RevisionName)
+	serveRevision(w, r, n.FleetName, n.RevisionName)
 }
 
 func staticHandler(w http.ResponseWriter, r *http.Request) {
@@ -166,12 +165,5 @@ func staticHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	filename := path.Join("static", m[1])
-	file, err := os.Open(filename)
-	if err != nil {
-		http.Error(w, "", http.StatusNotFound)
-	}
-
-	w.Header().Set("Content-Type", "text/css")
-
-	io.Copy(w, file)
+	http.ServeFile(w, r, filename)
 }
