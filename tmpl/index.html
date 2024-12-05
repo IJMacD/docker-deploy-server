@@ -67,7 +67,10 @@
       <td>
         <select form="form-{{.SerialNumber}}" name="fleet">
           {{range $f := $fs}}
-          <option value="{{.Name}}" {{if eq .Name $m.FleetName}}selected{{end}}>{{or .Name "default"}}</option>
+          <option value="{{.Name}}" {{if or (eq .Name $m.FleetName) (and (eq `` $m.FleetName) (eq .Name
+            `default`))}}selected{{end}}>
+            {{or .Name "default"}}
+          </option>
           {{end}}
         </select>
       </td>

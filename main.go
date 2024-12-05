@@ -20,8 +20,8 @@ var templates = template.Must(template.ParseFiles(
 	"tmpl/view.html",
 	"tmpl/fleet-view.html",
 ))
-var validRevisionsPath = regexp.MustCompile(`^/revisions/([a-zA-Z0-9]+)/(r\d+)$`)
-var validFleetsPath = regexp.MustCompile(`^/fleets/([a-zA-Z0-9]+)$`)
+var validRevisionsPath = regexp.MustCompile(`^/revisions/([a-zA-Z0-9-]+)/(r\d+)$`)
+var validFleetsPath = regexp.MustCompile(`^/fleets/([a-zA-Z0-9-]+)$`)
 var validMachinesPath = regexp.MustCompile(`^/machines/([a-zA-Z0-9-]+)$`)
 var validApiPath = regexp.MustCompile("^/api/machines/([a-zA-Z0-9-]+)/docker-compose.yml$")
 var validStaticPath = regexp.MustCompile("^/static/([a-zA-Z0-9.-]+)$")
