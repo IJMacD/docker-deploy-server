@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{{$name := or .Name "default"}}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fleet: {{$name}}</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body>
+    <h1>Fleet: {{$name}}</h1>
+
+    <p>
+        <a href="/">Back</a>
+    </p>
+
+    <h2>Revisions</h2>
+
+    <ul>
+        {{range $r := .RevisionNames}}
+        <li><a href="/revisions/{{$name}}/{{$r}}">{{$r}}</a></li>
+        {{end}}
+        {{if eq (len .RevisionNames) 0}}
+        <li><a href="/revisions/{{$name}}/r0">r0</a></li>
+        {{end}}
+    </ul>
+
+    <h2>Machines</h2>
+
+    <ul>
+        {{range $m := .Machines}}
+        <li>{{.SerialNumber}}: {{.RevisionName}}</li>
+        {{end}}
+    </ul>
+</body>
+
+</html>

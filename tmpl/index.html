@@ -9,13 +9,49 @@
 <body>
 
 <h1>Docker Deployer</h1>
+<h2>Fleets</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Revision</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{range $f := .Fleets}}
+    {{$rs := .RevisionNames}}
+    <tr>
+      <td>
+        <form id="fleet-{{$f.Name}}" action="/fleets/{{$f.Name}}" method="post">
+          <a href="/fleets/{{or $f.Name `default`}}">{{or $f.Name "default"}}</a>
+        </form>
+      </td>
+      <td><a href="/revisions/{{.Name}}/{{.CurrentRevisionName}}">{{.CurrentRevisionName}}</a></td>
+      <td><button form="fleet-{{$f.Name}}">Save</button></td>
+    </tr>
+    {{end}}
+    <tr>
+      <td>
+        <form id="fleet-new" action="/fleets" method="post">
+          <input name="name" placeholder="New Fleet Name" />
+        </form>
+      </td>
+      <td></td>
+      <td><button form="fleet-new">Create</button></td>
+    </tr>
+  </tbody>
+</table>
+
 <h2>Machines</h2>
 
-{{$rs := .Revisions}}
+{{$fs := .Fleets}}
 <table>
   <thead>
     <tr>
       <th>Serial Number</th>
+      <th>Fleet</th>
       <th>Revision</th>
       <th>Actions</th>
     </tr>
@@ -24,29 +60,23 @@
     {{range $m := .Machines}}
     <tr>
       <td>
-        <form id="form-{{$m.SerialNumber}}" action="/machines/{{$m.SerialNumber}}" method="post">
-          {{$m.SerialNumber}}
+        <form id="form-{{.SerialNumber}}" action="/machines/{{.SerialNumber}}" method="post">
+          {{.SerialNumber}}
         </form>
       </td>
       <td>
-        <select form="form-{{$m.SerialNumber}}" name="revision" >
-          {{range $r := $rs}}
-          <option value="{{$r}}" {{if eq $r $m.Revision}}selected{{end}}>{{$r}}</option>
+        <select form="form-{{.SerialNumber}}" name="fleet">
+          {{range $f := $fs}}
+          <option value="{{.Name}}" {{if eq .Name $m.FleetName}}selected{{end}}>{{or .Name "default"}}</option>
           {{end}}
         </select>
       </td>
-      <td><button form="form-{{$m.SerialNumber}}">Save</button></td>
+      <td>{{.RevisionName}}</td>
+      <td><button form="form-{{.SerialNumber}}">Save</button></td>
     </tr>
     {{end}}
   </tbody>
-</table>
+  </table>
 
-<h2>Revisions</h2>
-
-<ul>
-  {{range $r := .Revisions}}
-  <li><a href="/revisions/{{$r}}">{{$r}}</a></li>
-  {{end}}
-</ul>
 </body>
 </html>
