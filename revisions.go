@@ -29,7 +29,11 @@ func getRevisionNames(f string) ([]string, error) {
 		}
 	}
 
-	slices.Reverse(r)
+	slices.SortFunc(r, func (a string, b string) int {
+		_a, _ := strconv.Atoi(a[1:])
+		_b, _ := strconv.Atoi(b[1:])
+		return _b - _a
+	})
 
 	return r, nil
 }

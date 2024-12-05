@@ -74,7 +74,7 @@
           {{end}}
         </select>
       </td>
-      <td>{{.RevisionName}}</td>
+      <td><a href="/revisions/{{or .FleetName `default` }}/{{.RevisionName}}">{{.RevisionName}}</a></td>
       <td><button form="form-{{.SerialNumber}}">Save</button></td>
     </tr>
     {{end}}
