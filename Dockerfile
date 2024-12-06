@@ -11,7 +11,6 @@ ARG TARGETARCH
 ENV CGO_ENABLED=0
 
 RUN go build -v -o ./build/$TARGETARCH/docker-deploy-server .
-COPY fleets/default/r0.yml ./build/$TARGETARCH/fleets/default/
 COPY static ./build/$TARGETARCH/static/
 COPY tmpl ./build/$TARGETARCH/tmpl/
 

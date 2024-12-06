@@ -2,7 +2,6 @@ package main
 
 import (
 	"net/http"
-	"os"
 	"path"
 	"regexp"
 	"time"
@@ -106,17 +105,11 @@ func fleetCreateHandler(w http.ResponseWriter, r *http.Request) {
 	_, ok := getFleet(name)
 
 	if err == nil && !ok {
-		err = os.Mkdir(path.Join("fleets", name), 0o700)
+		err = makeFleet(name)
 
-		if err == nil {
-			fleets = append(fleets, Fleet{Name: name})
-
-			err = os.WriteFile(path.Join("fleets", name, defaultRevision+".yml"), []byte("services:\n"), 0o600)
-
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 	}
 

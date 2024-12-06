@@ -1,6 +1,9 @@
 package main
 
-import "os"
+import (
+	"os"
+	"path"
+)
 
 func getFleetNames() ([]string, error) {
 	l, err := os.ReadDir("fleets")
@@ -24,7 +27,7 @@ func makeFleets() ([]Fleet, error) {
 
 	fleetNames, err := getFleetNames()
 
-	if (err != nil) {
+	if err != nil {
 		return nil, err
 	}
 
@@ -35,7 +38,7 @@ func makeFleets() ([]Fleet, error) {
 	return fleets, nil
 }
 
-func getFleet(name string) (*Fleet, bool){
+func getFleet(name string) (*Fleet, bool) {
 	if name == "" {
 		name = defaultFleet
 	}
@@ -47,4 +50,22 @@ func getFleet(name string) (*Fleet, bool){
 	}
 
 	return nil, false
+}
+
+func makeFleet(name string) error {
+	err := os.Mkdir(path.Join("fleets", name), 0o700)
+
+	if err != nil {
+		return err
+	}
+
+	err = os.WriteFile(path.Join("fleets", name, defaultRevision+".yml"), []byte("services:\n"), 0o600)
+
+	if err != nil {
+		return err
+	}
+
+	fleets = append(fleets, Fleet{Name: name})
+
+	return nil
 }

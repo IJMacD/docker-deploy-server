@@ -1,3 +1,0 @@
-services:
-  web:
-    image: ubuntu:22.04

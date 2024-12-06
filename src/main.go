@@ -15,8 +15,8 @@ var defaultFleet = "default"
 var defaultRevision = "r0"
 
 var templates = template.Must(template.ParseFiles(
-	"tmpl/index.html", 
-	"tmpl/edit.html", 
+	"tmpl/index.html",
+	"tmpl/edit.html",
 	"tmpl/view.html",
 	"tmpl/fleet-view.html",
 ))
@@ -26,7 +26,6 @@ var validMachinesPath = regexp.MustCompile(`^/machines/([a-zA-Z0-9-]+)$`)
 var validApiPath = regexp.MustCompile("^/api/machines/([a-zA-Z0-9-]+)/docker-compose.yml$")
 var validStaticPath = regexp.MustCompile("^/static/([a-zA-Z0-9.-]+)$")
 
-
 func main() {
 	fs, err := makeFleets()
 	if err != nil {
@@ -34,12 +33,20 @@ func main() {
 	}
 	fleets = fs
 
+	if _, ok := getFleet(defaultFleet); !ok {
+		err = makeFleet(defaultFleet)
+
+		if err != nil {
+			panic("Unable to create default fleet")
+		}
+	}
+
 	http.HandleFunc("/api/machines/", apiHandler)
 
 	http.HandleFunc("/machines/", makeMachineHandler(machineHandler))
 
 	http.HandleFunc("/revisions/", makeRevisionHandler(revisionHandler))
-	
+
 	http.HandleFunc("/fleets/", makeFleetHandler(fleetViewHandler))
 	http.HandleFunc("/fleets", fleetCreateHandler)
 
