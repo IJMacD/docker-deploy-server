@@ -9,9 +9,14 @@ import (
 )
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		http.NotFound(w, r)
+		return
+	}
+
 	renderTemplate(w, "index", struct {
-		Fleets  	[]Fleet
-		Machines  	[]*Machine
+		Fleets   []Fleet
+		Machines []*Machine
 	}{Fleets: fleets, Machines: machines})
 }
 
@@ -78,8 +83,8 @@ func saveHandler(w http.ResponseWriter, r *http.Request, fleet string, revision 
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	
-	http.Redirect(w, r, "/revisions/" +fleet+ "/"+name, http.StatusFound)
+
+	http.Redirect(w, r, "/revisions/"+fleet+"/"+name, http.StatusFound)
 }
 
 func fleetViewHandler(w http.ResponseWriter, r *http.Request, fleet string) {
@@ -114,7 +119,7 @@ func fleetCreateHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	
+
 	http.Redirect(w, r, "/", http.StatusMovedPermanently)
 }
 
