@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: docker-deploy-server
+spec:
+  selector:
+    app: docker-deploy-server
+  ports:
+  - port: 8080
+    targetPort: 8080
