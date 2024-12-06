@@ -27,10 +27,6 @@ td {
   padding: 4px;
 }
 
-td:nth-child(1) {
-  width: 100%;
-}
-
 .revision-body {
   border: 1px solid #999;
   padding: 8px;

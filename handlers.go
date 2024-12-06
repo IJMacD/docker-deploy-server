@@ -5,6 +5,7 @@ import (
 	"os"
 	"path"
 	"regexp"
+	"time"
 )
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
@@ -152,6 +153,7 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Record latest revision served to machine
 	n.RevisionName = f.CurrentRevisionName()
+	n.LastSync = time.Now().Format(time.RFC3339)
 
 	serveRevision(w, r, n.FleetName, n.RevisionName)
 }

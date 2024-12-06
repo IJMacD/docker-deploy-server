@@ -16,7 +16,6 @@
     <tr>
       <th>Name</th>
       <th>Revision</th>
-      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
@@ -29,17 +28,16 @@
         </form>
       </td>
       <td><a href="/revisions/{{.Name}}/{{.CurrentRevisionName}}">{{.CurrentRevisionName}}</a></td>
-      <td><button form="fleet-{{$f.Name}}">Save</button></td>
     </tr>
     {{end}}
     <tr>
       <td>
         <form id="fleet-new" action="/fleets" method="post">
           <input name="name" placeholder="New Fleet Name" />
+          <button form="fleet-new">Create</button>
         </form>
       </td>
       <td></td>
-      <td><button form="fleet-new">Create</button></td>
     </tr>
   </tbody>
 </table>
@@ -53,6 +51,7 @@
       <th>Serial Number</th>
       <th>Fleet</th>
       <th>Revision</th>
+      <th>Last Sync</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -75,6 +74,7 @@
         </select>
       </td>
       <td><a href="/revisions/{{or .FleetName `default` }}/{{.RevisionName}}">{{.RevisionName}}</a></td>
+      <td>{{.LastSync}}</a></td>
       <td><button form="form-{{.SerialNumber}}">Save</button></td>
     </tr>
     {{end}}

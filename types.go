@@ -19,6 +19,7 @@ type Machine struct {
 	SerialNumber 	string
 	FleetName    	string
 	RevisionName    string
+	LastSync		string
 }
 
 func (r *Revision) save() error {

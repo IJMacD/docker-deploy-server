@@ -25,7 +25,7 @@ func getMachinesInFleet(fleet string) []*Machine {
 func getMachinesOnRevision(fleet string, revision string) []*Machine {
 	ms := make([]*Machine, 0)
 	for i, m := range machines {
-		if m.RevisionName == revision && m.FleetName == fleet {
+		if m.RevisionName == revision && (m.FleetName == fleet || (m.FleetName == "" && fleet == "default")) {
 			ms = append(ms, machines[i])
 		}
 	}
