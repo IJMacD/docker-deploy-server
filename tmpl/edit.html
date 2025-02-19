@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Creating {{.FleetName}}/{{.Name}}</title>
   <link rel="stylesheet" href="/static/style.css" />
+  <link rel="stylesheet" href="/static/cesh.min.css" />
 </head>
 <body>
 
@@ -16,8 +17,31 @@
 
 <form action="/revisions/{{.FleetName}}/{{.Name}}" method="POST">
 <div><textarea name="body" rows="20" cols="80">{{printf "%s" .Body}}</textarea></div>
-<div><input type="submit" value="Save"></div>
+<div><input type="submit" value="Save" id="save-button"></div>
 </form>
+<pre id="status" style="color: red;"></pre>
 
+<script type="module">
+  import yaml from "https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.mjs";
+  import * as cesh from "/static/cesh.esm.min.js"
+
+  const input = document.querySelector("textarea");
+  const status = document.querySelector("#status");
+  const saveButton = document.querySelector("#save-button");
+
+  cesh.editor(input, {});
+
+      input.addEventListener("change", e => {
+        try {
+          yaml.load(e.currentTarget.value);
+          status.textContent = "";
+          saveButton.disabled = false;
+        }
+        catch (e) {
+          status.textContent = e.message;
+          saveButton.disabled = true;
+        }
+      });
+    </script>
 </body>
 </html>

@@ -16,6 +16,7 @@
     <tr>
       <th>Name</th>
       <th>Revision</th>
+      <th>Machines</th>
     </tr>
   </thead>
   <tbody>
@@ -28,16 +29,16 @@
         </form>
       </td>
       <td><a href="/revisions/{{.Name}}/{{.CurrentRevisionName}}">{{.CurrentRevisionName}}</a></td>
+      <td>{{len .CurrentRevision.Machines }} / {{len .Machines }}</td>
     </tr>
     {{end}}
     <tr>
-      <td>
+      <td colspan="3">
         <form id="fleet-new" action="/fleets" method="post">
           <input name="name" placeholder="New Fleet Name" />
           <button form="fleet-new">Create</button>
         </form>
       </td>
-      <td></td>
     </tr>
   </tbody>
 </table>
@@ -48,7 +49,7 @@
 <table>
   <thead>
     <tr>
-      <th>Serial Number</th>
+      <th>Hostname</th>
       <th>Fleet</th>
       <th>Revision</th>
       <th>Last Sync</th>
