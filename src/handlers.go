@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"path"
 	"regexp"
@@ -121,11 +122,9 @@ func machineHandler(w http.ResponseWriter, r *http.Request, serial string) {
 
 	m, ok := getMachine(serial)
 
-	f, ok2 := getFleet(fleet)
-
-	if ok && ok2 {
+	if ok {
 		m.FleetName = fleet
-		m.RevisionName = f.CurrentRevisionName()
+		m.RevisionName = ""
 	}
 
 	http.Redirect(w, r, "/", http.StatusFound)
@@ -152,6 +151,8 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 	// Record latest revision served to machine
 	n.RevisionName = f.CurrentRevisionName()
 	n.LastSync = time.Now().Format(time.RFC3339)
+
+	machineLedger.WriteString(fmt.Sprintf("%s,%s,%s,%s\n", n.SerialNumber, n.FleetName, n.RevisionName, n.LastSync))
 
 	serveRevision(w, r, n.FleetName, n.RevisionName)
 }

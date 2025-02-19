@@ -5,11 +5,14 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"regexp"
 )
 
 var fleets []Fleet
 var machines = make([]*Machine, 0)
+
+var machineLedger *os.File
 
 var defaultFleet = "default"
 var defaultRevision = "r0"
@@ -39,6 +42,23 @@ func main() {
 		if err != nil {
 			panic("Unable to create default fleet")
 		}
+	}
+
+	machineLedger, err = os.OpenFile("machines.csv", os.O_WRONLY | os.O_APPEND | os.O_CREATE, 0o600)
+	if err != nil {
+		panic("Unable to open machine ledger")
+	}
+
+	i, err := machineLedger.Stat()
+	if err != nil {
+		panic("Unable to determine ledger size")
+	}
+	if i.Size() == 0 {
+		n, err := machineLedger.WriteString("machine,fleet,revision,lastSync\n")
+		if err != nil {
+			panic("Unable to write headers to machine ledger. " + err.Error())
+		}
+		fmt.Printf("Written %d bytes to %s\n", n, "machines.csv")
 	}
 
 	http.HandleFunc("/api/machines/", apiHandler)

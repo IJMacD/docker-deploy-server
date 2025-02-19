@@ -43,6 +43,16 @@ func (f *Fleet) RevisionNames() []string {
 	return rs
 }
 
+func (f *Fleet) CurrentRevision() *Revision {
+	r, err := getRevision(f.Name, f.CurrentRevisionName())
+
+	if err != nil {
+
+	}
+
+	return r
+}
+
 func (f *Fleet) CurrentRevisionName() string {
 	return getLatestRevisionName(f.Name)
 }
