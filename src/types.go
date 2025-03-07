@@ -17,7 +17,7 @@ type Fleet struct {
 
 type Machine struct {
 	SerialNumber 	string
-	FleetName    	string
+	fleetName    	string
 	RevisionName    string
 	LastSync		string
 }
@@ -55,8 +55,15 @@ func (f *Fleet) Machines() []*Machine {
 	return getMachinesInFleet(f.Name)
 }
 
+func (m *Machine) FleetName() string {
+	if m.fleetName == "" {
+		return defaultFleet
+	}
+	return m.fleetName
+}
+
 func (m *Machine) Revision() *Revision {
-	r, err := getRevision(m.FleetName, m.RevisionName)
+	r, err := getRevision(m.FleetName(), m.RevisionName)
 
 	if err != nil {
 

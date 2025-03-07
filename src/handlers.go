@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"path"
 	"regexp"
@@ -121,30 +122,38 @@ func machineHandler(w http.ResponseWriter, r *http.Request, serial string) {
 
 	m, ok := getMachine(serial)
 
-	f, ok2 := getFleet(fleet)
-
-	if ok && ok2 {
-		m.FleetName = fleet
-		m.RevisionName = f.CurrentRevisionName()
+	if ok {
+		m.fleetName = fleet
+		m.RevisionName = ""
 	}
 
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
 func apiHandler(w http.ResponseWriter, r *http.Request) {
-	m := validApiPath.FindStringSubmatch(r.URL.Path)
-	if m == nil {
-		http.NotFound(w, r)
+	m := validMachineApiPath.FindStringSubmatch(r.URL.Path)
+	if m != nil {
+		apiHandlerMachine(w, r, m[1])
 		return
 	}
 
-	n, ok := getMachine(m[1])
+	m = validFleetApiPath.FindStringSubmatch(r.URL.Path)
+	if m != nil {
+		apiHandlerFleet(w, r, m[1])
+		return
+	}
+
+	http.NotFound(w, r)
+}
+
+func apiHandlerMachine(w http.ResponseWriter, r *http.Request, m string) {
+	n, ok := getMachine(m)
 	if !ok {
-		n = &Machine{SerialNumber: m[1]}
+		n = &Machine{SerialNumber: m}
 		machines = append(machines, n)
 	}
 
-	f, ok := getFleet(n.FleetName)
+	f, ok := getFleet(n.fleetName)
 	if !ok {
 		f = &Fleet{}
 	}
@@ -153,7 +162,16 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 	n.RevisionName = f.CurrentRevisionName()
 	n.LastSync = time.Now().Format(time.RFC3339)
 
-	serveRevision(w, r, n.FleetName, n.RevisionName)
+	http.Redirect(w, r, fmt.Sprintf("/api/v1/fleets/%s/docker-compose.yml", n.FleetName()), http.StatusFound)
+}
+
+func apiHandlerFleet(w http.ResponseWriter, r *http.Request, n string) {
+	f, ok := getFleet(n)
+	if !ok {
+		f = &Fleet{}
+	}
+
+	serveRevision(w, r, n, f.CurrentRevisionName())
 }
 
 func staticHandler(w http.ResponseWriter, r *http.Request) {

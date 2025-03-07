@@ -23,7 +23,8 @@ var templates = template.Must(template.ParseFiles(
 var validRevisionsPath = regexp.MustCompile(`^/revisions/([a-zA-Z0-9-]+)/(r\d+)$`)
 var validFleetsPath = regexp.MustCompile(`^/fleets/([a-zA-Z0-9-]+)$`)
 var validMachinesPath = regexp.MustCompile(`^/machines/([a-zA-Z0-9-]+)$`)
-var validApiPath = regexp.MustCompile("^/api/machines/([a-zA-Z0-9-]+)/docker-compose.yml$")
+var validMachineApiPath = regexp.MustCompile("^/api/v1/machines/([a-zA-Z0-9-]+)/docker-compose.yml$")
+var validFleetApiPath = regexp.MustCompile("^/api/v1/fleets/([a-zA-Z0-9-]+)/docker-compose.yml$")
 var validStaticPath = regexp.MustCompile("^/static/([a-zA-Z0-9.-]+)$")
 
 func main() {
@@ -41,7 +42,8 @@ func main() {
 		}
 	}
 
-	http.HandleFunc("/api/machines/", apiHandler)
+	http.HandleFunc("/api/v1/machines/", apiHandler)
+	http.HandleFunc("/api/v1/fleets/", apiHandler)
 
 	http.HandleFunc("/machines/", makeMachineHandler(machineHandler))
 
