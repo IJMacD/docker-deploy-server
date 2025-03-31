@@ -1,0 +1,5 @@
+apiVersion: v2
+description: A helm chart for docker-deploy-server
+name: docker-deploy-server
+type: application
+version: 1.0.0

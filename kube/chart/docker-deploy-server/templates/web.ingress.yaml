@@ -1,0 +1,37 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: '{{ .Release.Name }}-web'
+  labels:
+    app.kubernetes.io/name: '{{ .Chart.Name }}'
+    app.kubernetes.io/instance: '{{ .Release.Name }}'
+    app.kubernetes.io/version: '{{ .Chart.Version }}'
+    app.kubernetes.io/component: web
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+    {{- if .Values.web.auth.enabled }}
+    # type of authentication
+    nginx.ingress.kubernetes.io/auth-type: {{ .Values.web.auth.type }}
+    # name of the secret that contains the user/password definitions
+    nginx.ingress.kubernetes.io/auth-secret: {{ .Values.web.auth.secretName }}
+    # message to display with an appropriate context why the authentication is required
+    nginx.ingress.kubernetes.io/auth-realm: {{ .Values.web.auth.realm }}
+    {{- end }}
+spec:
+  rules:
+  - host: '{{ .Values.hostname }}'
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: '{{ .Release.Name }}-web'
+            port:
+              name: "web"
+  {{- if .Values.web.tls.enabled }}
+  tls:
+  - hosts:
+    - '{{ .Values.hostname }}'
+    secretName: {{ .Release.Name }}-cert
+  {{- end }}
